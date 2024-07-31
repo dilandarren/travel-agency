@@ -1,6 +1,55 @@
+import { Testimonial } from'../models/Testimoniales.js';
 
-const guardarTestimonial = (req, res) => {
-    console.log(req.body);
+const guardarTestimonial = async(req, res) => {
+    
+    //validar..
+
+    const{nombre, correo, mensaje} = req.body;
+
+    const errores = [];
+
+    if (nombre.trim() === '') {
+        errores.push({mensaje : 'El nombre esta vacio'});
+    }
+
+    if (correo.trim() === '') {
+        errores.push({mensaje : 'El correo esta vacio'});
+    }
+
+    if (nombre.trim() === '') {
+        errores.push({mensaje : 'El mensaje esta vacio'});
+    }
+
+
+    if (errores.length > 0) {
+        
+
+        //Mostrar la vista con errores
+        res.render('testimoniales', {
+            pagina:'Testimoniales',
+            errores,
+            nombre,
+            correo,
+            mensaje
+        })
+    } else {
+        //Almacenamiento en la db
+
+        console.log(mensaje);
+
+        try {
+            await Testimonial.create({
+                nombre,
+                correo,
+                mensaje
+            });
+
+            res.redirect('/testimoniales');
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
 }
 
 export {
